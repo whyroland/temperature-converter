@@ -9,8 +9,8 @@ import javax.swing.*;
  * @date 3/13/20
  */
 public class TemperatureConverter {
-
-	private final int WIDTH = 300, HEIGHT = 75;
+	
+	private final int WIDTH = 300, HEIGHT = 150;
 	private String currentType;
 	
 	private String[] scales = {"Fahrenheit", "Celsius", "Kelvin"};
@@ -20,31 +20,62 @@ public class TemperatureConverter {
 	private JTextField input;
 	private JLabel output1, output2;
 	private JPanel panel;
+	private Font mainFont;
 	
 	public TemperatureConverter() {
 		
+		// Uses your computer's default set style
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		mainFont = new Font("Roboto", Font.BOLD, 15);
+		
 		frame = new JFrame("Temperature Converter");
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		options = new JComboBox(scales);
 		options.setSelectedIndex(0); // Sets the default to Fahrenheit
+		options.setFont(mainFont);
 		currentType = "Fahrenheit";
 		options.addActionListener(new ScaleListener());
 		
 		input = new JTextField(5);
+		input.setFont(mainFont);
 		input.addActionListener(new TemperatureListener());
 		
 		output1 = new JLabel("Celsius: --"); // Sets default to Celsius
+		output1.setForeground(Color.WHITE);
+		output1.setFont(mainFont);
+		
 		output2 = new JLabel("Kelvin: --"); // Sets default to Kelvin
+		output2.setForeground(Color.WHITE);
+		output2.setFont(mainFont);
 		
 		panel = new JPanel();
 		panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		panel.setBackground(new Color(87, 90, 92));
 		panel.add(options);
 		panel.add(input);
 		panel.add(output1);
 		panel.add(output2);
+		panel.setFont(mainFont);
 		
-		frame.getContentPane().add(panel);
+		SpringLayout layout = new SpringLayout();
+		panel.setLayout(layout);
+		layout.putConstraint(SpringLayout.WEST, options, 60, SpringLayout.WEST, panel);
+		layout.putConstraint(SpringLayout.NORTH, options, 25, SpringLayout.NORTH, panel);
+		layout.putConstraint(SpringLayout.WEST, input, 5, SpringLayout.EAST, options);
+		layout.putConstraint(SpringLayout.NORTH, input, 0, SpringLayout.NORTH, options);
+		layout.putConstraint(SpringLayout.WEST, output1, 0, SpringLayout.WEST, options);
+		layout.putConstraint(SpringLayout.VERTICAL_CENTER, output1, 0, SpringLayout.VERTICAL_CENTER, panel);
+		layout.putConstraint(SpringLayout.WEST, output2, 0, SpringLayout.WEST, options);
+		layout.putConstraint(SpringLayout.NORTH, output2, 20, SpringLayout.SOUTH, output1);
+		
+		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		frame.pack();
 		frame.setVisible(true);
 		
